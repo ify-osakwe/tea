@@ -6,6 +6,7 @@ import github.com.rexfilius.tea.modules.comment.model.Comment;
 import github.com.rexfilius.tea.modules.comment.model.CommentDto;
 import github.com.rexfilius.tea.modules.post.model.Post;
 import github.com.rexfilius.tea.modules.post.model.PostDto;
+import org.springframework.beans.factory.BeanCurrentlyInCreationException;
 
 public abstract class ModelMapper {
 

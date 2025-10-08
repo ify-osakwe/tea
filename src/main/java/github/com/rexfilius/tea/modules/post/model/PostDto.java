@@ -21,9 +21,11 @@ public class PostDto {
     @NotEmpty
     private String content;
 
+    private Long categoryId;
+
     private Set<CommentDto> comments;
 
-    private Long categoryId;
+
 
     @Override
     public String toString() {

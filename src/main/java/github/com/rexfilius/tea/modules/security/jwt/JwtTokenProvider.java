@@ -16,6 +16,9 @@ import javax.crypto.SecretKey;
 import java.security.Key;
 import java.util.Date;
 
+/**
+ * A utility class for JWT
+ */
 @Component
 public class JwtTokenProvider {
 

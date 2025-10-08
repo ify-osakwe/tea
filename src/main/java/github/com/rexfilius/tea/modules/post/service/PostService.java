@@ -7,6 +7,8 @@ import github.com.rexfilius.tea.exception.ResourceNotFoundException;
 import github.com.rexfilius.tea.modules.post.model.AllPostResponse;
 import github.com.rexfilius.tea.modules.post.model.PostDto;
 import github.com.rexfilius.tea.modules.post.repo.PostRepository;
+import github.com.rexfilius.tea.utils.ModelMapper;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -23,12 +25,20 @@ public class PostService {
     private final PostRepository postRepository;
     private final CategoryRepository categoryRepository;
 
+    @Value("${app.name}")
+    private String appName;
+
+    @Value("${app.version}")
+    private String appVersion;
+
+
     public PostService(
             PostRepository postRepository,
             CategoryRepository categoryRepository
     ) {
         this.postRepository = postRepository;
         this.categoryRepository = categoryRepository;
+        System.out.println(appName + " " + appVersion);
     }
 
     public PostDto createPost(PostDto postDto) {
@@ -49,20 +59,16 @@ public class PostService {
                 : Sort.by(sortBy).descending();
 
         Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
-        Page<Post> postsPages = postRepository.findAll(pageable);
-
-        List<Post> posts = postsPages.getContent();
-        List<PostDto> postDtoList = posts.stream()
-                .map((post) -> modelToDto(post))
-                .collect(Collectors.toList());
+        Page<Post> postPage = postRepository.findAll(pageable);
+        Page<PostDto> postDtoPage = postPage.map(ModelMapper::modelToDto);
 
         AllPostResponse postResponse = new AllPostResponse();
-        postResponse.setPosts(postDtoList);
-        postResponse.setPageNo(postsPages.getNumber());
-        postResponse.setPageSize(postsPages.getSize());
-        postResponse.setTotalElements(postsPages.getTotalElements());
-        postResponse.setTotalPages(postsPages.getTotalPages());
-        postResponse.setLast(postsPages.isLast());
+        postResponse.setPosts(postDtoPage.getContent());
+        postResponse.setPageNo(postDtoPage.getNumber());
+        postResponse.setPageSize(postDtoPage.getSize());
+        postResponse.setTotalElements(postDtoPage.getTotalElements());
+        postResponse.setTotalPages(postDtoPage.getTotalPages());
+        postResponse.setLast(postDtoPage.isLast());
         return postResponse;
     }
 
