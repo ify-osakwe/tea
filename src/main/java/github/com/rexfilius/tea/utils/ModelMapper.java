@@ -1,16 +1,18 @@
 package github.com.rexfilius.tea.utils;
 
+import org.springframework.stereotype.Component;
+
 import github.com.rexfilius.tea.modules.category.model.Category;
 import github.com.rexfilius.tea.modules.category.model.CategoryDto;
 import github.com.rexfilius.tea.modules.comment.model.Comment;
 import github.com.rexfilius.tea.modules.comment.model.CommentDto;
 import github.com.rexfilius.tea.modules.post.model.Post;
 import github.com.rexfilius.tea.modules.post.model.PostDto;
-import org.springframework.beans.factory.BeanCurrentlyInCreationException;
 
-public abstract class ModelMapper {
+@Component
+public class ModelMapper {
 
-    public static PostDto modelToDto(Post post) {
+    public PostDto modelToDto(Post post) {
         PostDto postDto = new PostDto();
         postDto.setId(post.getId());
         postDto.setTitle(post.getTitle());
@@ -22,7 +24,7 @@ public abstract class ModelMapper {
         return postDto;
     }
 
-    public static Post dtoToModel(PostDto postDto) {
+    public Post dtoToModel(PostDto postDto) {
         Post post = new Post();
         post.setTitle(postDto.getTitle());
         post.setContent(postDto.getContent());
@@ -30,7 +32,7 @@ public abstract class ModelMapper {
         return post;
     }
 
-    public static CategoryDto modelToDto(Category category) {
+    public CategoryDto modelToDto(Category category) {
         CategoryDto categoryDto = new CategoryDto();
         categoryDto.setId(category.getId());
         categoryDto.setName(category.getName());
@@ -38,7 +40,7 @@ public abstract class ModelMapper {
         return categoryDto;
     }
 
-    public static Category dtoToModel(CategoryDto categoryDto) {
+    public Category dtoToModel(CategoryDto categoryDto) {
         Category category = new Category();
         category.setId(categoryDto.getId());
         category.setName(categoryDto.getName());
@@ -46,7 +48,7 @@ public abstract class ModelMapper {
         return category;
     }
 
-    public static CommentDto modelToDto(Comment comment) {
+    public CommentDto modelToDto(Comment comment) {
         CommentDto commentDto = new CommentDto();
         commentDto.setId(comment.getId());
         commentDto.setName(comment.getName());
@@ -55,7 +57,7 @@ public abstract class ModelMapper {
         return commentDto;
     }
 
-    public static Comment dtoToModel(CommentDto commentDto) {
+    public Comment dtoToModel(CommentDto commentDto) {
         Comment comment = new Comment();
         comment.setName(commentDto.getName());
         comment.setEmail(commentDto.getEmail());

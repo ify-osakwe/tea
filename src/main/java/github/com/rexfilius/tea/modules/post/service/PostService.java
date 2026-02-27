@@ -17,18 +17,19 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static github.com.rexfilius.tea.utils.ModelMapper.*;
-
 @Service
 public class PostService {
         private final PostRepository postRepository;
         private final CategoryRepository categoryRepository;
+        private final ModelMapper modelMapper;
 
         public PostService(
                         PostRepository postRepository,
-                        CategoryRepository categoryRepository) {
+                        CategoryRepository categoryRepository,
+                        ModelMapper modelMapper) {
                 this.postRepository = postRepository;
                 this.categoryRepository = categoryRepository;
+                this.modelMapper = modelMapper;
         }
 
         public PostDto createPost(PostDto postDto) {
@@ -36,10 +37,10 @@ public class PostService {
                                 .orElseThrow(() -> new ResourceNotFoundException("Category", "id",
                                                 postDto.getCategoryId()));
 
-                Post post = dtoToModel(postDto);
+                Post post = modelMapper.dtoToModel(postDto);
                 post.setCategory(category);
                 Post savedPost = postRepository.save(post);
-                return modelToDto(savedPost);
+                return modelMapper.modelToDto(savedPost);
 
         }
 
@@ -50,7 +51,7 @@ public class PostService {
 
                 Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
                 Page<Post> postPage = postRepository.findAll(pageable);
-                Page<PostDto> postDtoPage = postPage.map(ModelMapper::modelToDto);
+                Page<PostDto> postDtoPage = postPage.map(modelMapper::modelToDto);
 
                 AllPostResponse postResponse = new AllPostResponse();
                 postResponse.setPosts(postDtoPage.getContent());
@@ -65,7 +66,7 @@ public class PostService {
         public PostDto getPostById(long id) {
                 Post post = postRepository.findById(id)
                                 .orElseThrow(() -> new ResourceNotFoundException("Post", "id", id));
-                return modelToDto(post);
+                return modelMapper.modelToDto(post);
         }
 
         public PostDto updatePost(PostDto postDto, long id) {
@@ -82,7 +83,7 @@ public class PostService {
                 post.setCategory(category);
 
                 Post updatedPost = postRepository.save(post);
-                return modelToDto(updatedPost);
+                return modelMapper.modelToDto(updatedPost);
         }
 
         public void deletePostById(long id) {
@@ -97,7 +98,7 @@ public class PostService {
 
                 List<Post> postList = postRepository.findByCategoryId(categoryId);
                 return postList.stream()
-                                .map((post) -> modelToDto(post))
+                                .map((post) -> modelMapper.modelToDto(post))
                                 .collect(Collectors.toList());
         }
 }
