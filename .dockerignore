@@ -1,0 +1,26 @@
+# Git
+.git
+.gitignore
+.gitattributes
+
+# IDE
+.idea/
+.vscode/
+*.iml
+
+# Build output
+target/
+
+# Environment / secrets
+.env
+
+# Documentation
+*.md
+
+# Maven wrapper (already copied explicitly)
+# Uncomment if not needed:
+# mvnw.cmd
+
+# OS files
+.DS_Store
+Thumbs.db
