@@ -1,78 +1,158 @@
-# Tea API
+# Tea — Blog REST API
 
-This is a RESTful API built using Spring Boot for a Blog Application that supports both mobile and web apps. The API provides endpoints for user authentication, blog posts, comments, and categories with role-based security. The project also includes live Swagger documentation to facilitate API usage.
+A modern, production-ready **REST API for a blog application** built with Spring Boot 3.4. Tea provides secure, well-structured endpoints for managing posts, comments, categories, and user authentication — complete with email verification, JWT-based security, and interactive API documentation.
 
-## Features
+---
 
-### Authentication and Authorization
-- **User Registration:** Users can sign up and choose one of two roles: `admin` or `user`. A verification code is
-also sent to user's email to verify account.
-- **User Login:** Users can log in to receive a JWT access token for subsequent API calls.
-- **Role-Based Security:** Admin and user roles are implemented to restrict access to specific endpoints.
+## Key Features
 
-### Post Management
-- Create a post
-- Get a single post
-- Get all posts
-- Update a post
-- Delete a post
-- Get all posts under a category
+- **JWT Authentication & Email Verification** — Secure user registration with email-based OTP verification, login with JWT access tokens, and role-based access control via Spring Security.
+- **Full Blog CRUD Operations** — Create, read, update, and delete posts with support for pagination, sorting, and category-based filtering.
+- **Commenting System** — Threaded comments tied to individual posts, with full CRUD support.
+- **Category Management** — Organize posts under user-defined categories for structured content navigation.
+- **Interactive API Documentation** — Auto-generated Swagger UI powered by SpringDoc OpenAPI, available at `/swagger-ui/index.html`.
 
-### Comment Management
-- Create a comment
-- Get a single comment
-- Get all comments
-- Update a comment
-- Delete a comment
+---
 
-### Category Management
-- Create a category (admin only)
-- Get a single category
-- Get all categories
-- Update a category (admin only)
-- Delete a category (admin only)
- 
-### Entity Relationships
-- A category can have many posts.
-- A post can belong to one category.
-- A post can have many comments.
+## 🛠️ Tech Stack
 
-### Security
-- **Database Authentication:** User credentials are stored securely in a database.
-- **JWT Authentication:** All API calls are secured using JWT tokens.
-- **Role-Based Access Control:** Admin-exclusive endpoints are restricted.
+| Layer                | Technology                                               |
+| -------------------- | -------------------------------------------------------- |
+| **Language**         | Java 21                                                  |
+| **Framework**        | Spring Boot 3.4.0                                        |
+| **Persistence**      | Spring Data JPA + Hibernate                              |
+| **Database**         | PostgreSQL 16                                            |
+| **Migrations**       | Flyway                                                   |
+| **Security**         | Spring Security + JWT (jjwt 0.12.6)                      |
+| **Validation**       | Jakarta Bean Validation (spring-boot-starter-validation) |
+| **Email**            | Spring Boot Mail (SMTP)                                  |
+| **API Docs**         | SpringDoc OpenAPI 2.7.0 (Swagger UI)                     |
+| **Build Tool**       | Maven (with Maven Wrapper)                               |
+| **Containerization** | Docker (multi-stage build) + Docker Compose              |
 
-[//]: # (### Additional Features)
+---
 
-[//]: # (- **Live Swagger Documentation:** You can access the swagger documentation for this api here [docs]&#40;http://tea-rest-api-env.eba-grfhpa2h.us-east-1.elasticbeanstalk.com/swagger-ui/index.html&#41;)
+## Prerequisites
 
-## API Endpoints
+Before you begin, ensure you have the following installed:
 
-### Authentication
-- `POST /v1/auth/register` - Register a new user.
-- `POST /v1/auth/login` - Log in and receive a JWT token.
-- `POST /v1/auth/verify` - Verify a new user.
-- `POST /v1/auth/resend/{email}` - Resend verification code.
+| Requirement             | Version                                               |
+| ----------------------- | ----------------------------------------------------- |
+| **Java JDK**            | 21 or higher                                          |
+| **Maven**               | 3.9+ _(or use the included Maven Wrapper — `./mvnw`)_ |
+| **PostgreSQL**          | 16+ _(or use Docker Compose)_                         |
+| **Docker** _(optional)_ | 20.10+                                                |
 
-### Posts
-- `POST /v1/posts` - Create a new post.
-- `GET /v1/posts/{id}` - Retrieve a single post.
-- `GET /v1/posts` - Retrieve all posts.
-- `PUT /v1/posts/{id}` - Update a post.
-- `DELETE /v1/posts/{id}` - Delete a post.
-- `GET /v1/posts/category/{id}` - Get all posts under a category.
+---
 
-### Comments
-- `POST /v1/posts/{postId}/comments` - Create a new comment.
-- `GET /v1/posts/{postId}/comments/{commentId}` - Get a comment under post.
-- `GET /v1/posts/{postId}/comments` - Get all comments under a post.
-- `PUT /v1/posts/{postId}/comments/{commentId}` - Update a comment.
-- `DELETE /v1/posts/{postId}/comments/{commentId}` - Delete a comment.
+## Installation & Setup
 
-### Categories
-- `POST /v1/categories` - Create a new category (admin only).
-- `GET /v1/categories/{id}` - Retrieve a single category.
-- `GET /v1/categories` - Retrieve all categories.
-- `PUT /v1/categories/{id}` - Update a category (admin only).
-- `DELETE /v1/categories/{id}` - Delete a category (admin only).
+### 1. Clone the Repository
 
+```bash
+git clone https://github.com/ify-osakwe/tea.git
+cd tea
+```
+
+### 2. Configure Environment Variables
+
+Create a `.env` file in the project root with the following keys:
+
+```properties
+# Database
+DB_URL=jdbc:postgresql://localhost:5432/tea_db
+DB_USERNAME=your_db_username
+DB_PASSWORD=your_db_password
+
+# JWT
+JWT_SECRET=your_base64_encoded_secret_key
+JWT_EXPIRATION=86400000
+
+# SMTP (Email Verification)
+SMTP_HOST=smtp.gmail.com
+SMTP_PORT=587
+SMTP_USERNAME=your_email@gmail.com
+SMTP_PASSWORD=your_app_password
+```
+
+> [!NOTE]
+> The application uses `spring.config.import=optional:file:.env[.properties]` to automatically load the `.env` file. No additional configuration is needed.
+
+### 3. Create the Database
+
+If running PostgreSQL locally:
+
+```bash
+createdb tea_db
+```
+
+> [!TIP]
+> **Flyway** will automatically run all migrations in `src/main/resources/db/migration/` on application startup, creating the required tables (`posts`, `comments`, `categories`, `roles`, `users`).
+
+### 4. Run the Application
+
+**Using Maven Wrapper (recommended):**
+
+```bash
+./mvnw spring-boot:run
+```
+
+**Or using Docker Compose** (includes PostgreSQL):
+
+```bash
+docker compose up --build
+```
+
+The API will be available at `http://localhost:8080`.
+
+### 5. Explore the API
+
+Open the interactive Swagger UI:
+
+```
+http://localhost:8080/swagger-ui/index.html
+```
+
+**Live Demo:** [tea-swagger-doc](https://tea-w1fs.onrender.com/swagger-ui/index.html)
+
+---
+
+## Architecture Overview
+
+Tea follows a **modular, layered architecture** where each domain feature is encapsulated as an independent module with its own controller, service, repository, and model layers.
+
+### Request Lifecycle
+
+```
+Client Request
+    → JwtAuthenticationFilter (validates Bearer token)
+    → SecurityFilterChain (authorization rules)
+    → @RestController (route handling + validation)
+    → @Service (business logic)
+    → @Repository (Spring Data JPA → PostgreSQL)
+    → Response (DTO) → Client
+```
+
+**Key architectural decisions:**
+
+- **Stateless sessions** — `SessionCreationPolicy.STATELESS` ensures no server-side session storage; all auth state is carried in the JWT.
+- **Flyway migrations** — Schema is version-controlled; Hibernate is set to `validate` mode only (no auto-DDL).
+- **Global exception handling** — `@ControllerAdvice` provides consistent error response format across all endpoints.
+- **Constructor injection** — All dependencies use constructor injection (no `@Autowired` on fields).
+
+---
+
+## Docker
+
+### Build & Run with Docker Compose
+
+```bash
+docker compose up --build
+```
+
+This starts both the **Tea API** (port `8080`) and a **PostgreSQL 16** instance, with a persistent volume for database storage. The app container waits for the database health check before starting.
+
+> [!NOTE]
+> The Dockerfile uses a **multi-stage build** (dependency caching → packaging → layer extraction → minimal JRE runtime) for optimized image size and build performance.
+
+---
