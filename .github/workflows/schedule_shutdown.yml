@@ -1,0 +1,22 @@
+name: Scheduled Shutdown
+on:
+  schedule:
+    - cron: '0 0 * * *'  # 12 midnight UTC: Shut down
+    - cron: '0 11 * * *'  # 5 AM UTC: Start up
+
+jobs:
+  manage-service:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Railway CLI
+        run: npm install -g @railway/cli
+      - name: Start/Stop Service
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+        run: |
+          if [ "$(date +%H)" -eq "00" ]; then
+            railway down --service sky --yes
+          else
+            railway up --service sky --detach
+          fi
