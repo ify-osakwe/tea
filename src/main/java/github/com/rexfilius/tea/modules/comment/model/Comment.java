@@ -4,7 +4,7 @@ import github.com.rexfilius.tea.modules.post.model.Post;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "comments")
+@Table(name = "tea_comments")
 public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

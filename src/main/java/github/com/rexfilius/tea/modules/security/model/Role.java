@@ -3,7 +3,7 @@ package github.com.rexfilius.tea.modules.security.model;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "roles")
+@Table(name = "tea_roles")
 public class Role {
 
     @Id
